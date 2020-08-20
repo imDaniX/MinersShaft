@@ -1,0 +1,46 @@
+messages:
+  cooldown: '&cThis block is on cooldown for {seconds} seconds!'
+  reloaded: '&aPlugin was successfully reloaded!'
+
+worlds:
+  # World name (case-sensitive)
+  world:
+    # WG region name
+    example-mine:
+      # Material of block to listen
+      iron_ore:
+        # Materials to drop
+        # - material amount weight
+        # Chance of drop is (weight/total_weight)
+        # Weight is 1 if not specified
+        custom-drop:
+          - iron_ore 1 2
+          - iron_ingot 1
+          - iron_nugget 7
+        # Replace broken block with..
+        replace-with:
+          - cobblestone
+          - andesite
+        # Give drop of block instantly to the inventory, false by default
+        instant: true
+        # Cooldown between regenerations in seconds, 60 by default
+        cooldown: 60
+
+      gold_ore:
+        custom-drop:
+          - golden_apple 1
+          - gold_ore 1 49
+        replace-with:
+          - air
+        instant: false
+        cooldown: 120
+
+      diamond_ore:
+        # If there's no custom-drop block will drop vanilla items
+        custom-drop: []
+        replace-with:
+          - obsidian
+        instant: true
+
+      coal_ore:
+        cooldown: 30

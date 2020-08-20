@@ -1,0 +1,10 @@
+name: SimpleMine
+version: ${project.version}
+main: me.imdanix.mine.SimpleMine
+api-version: 1.13
+authors: [imDaniX]
+description: Just for some regenerative mines
+depend: [WorldGuard]
+commands:
+  simplemine:
+    permission: simplemine.reload
