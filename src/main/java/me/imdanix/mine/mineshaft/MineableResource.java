@@ -1,7 +1,7 @@
 package me.imdanix.mine.mineshaft;
 
 import lombok.Value;
-import me.imdanix.mine.WeightedCollection;
+import me.imdanix.mine.util.WeightedCollection;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

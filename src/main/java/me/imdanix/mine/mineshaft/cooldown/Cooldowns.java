@@ -1,5 +1,7 @@
 package me.imdanix.mine.mineshaft.cooldown;
 
+import lombok.Setter;
+import me.imdanix.mine.mineshaft.Effect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +22,9 @@ public class Cooldowns {
     private final SQLite database;
     private final SortedSet<CooledBlock> cooledBlocks;
     private final Map<Location, CooledBlock> byLocation;
+
+    @Setter
+    private Effect regenEffect;
 
     public Cooldowns(Plugin plugin) {
         this.plugin = plugin;
@@ -83,8 +88,10 @@ public class Cooldowns {
                 break;
             }
             iter.remove();
-            byLocation.remove(block.getLocation());
-            toRemove.add(block.getLocation());
+            Location loc = block.getLocation();
+            regenEffect.play(loc);
+            byLocation.remove(loc);
+            toRemove.add(loc);
         }
         if (!toRemove.isEmpty()) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
@@ -101,5 +108,4 @@ public class Cooldowns {
             byLocation.put(block.getLocation(), block);
         }
     }
-
 }

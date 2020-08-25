@@ -1,14 +1,16 @@
 package me.imdanix.mine.mineshaft.cooldown;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-@Value
+@Getter
+@AllArgsConstructor
 public class CooledBlock implements Comparable<CooledBlock> {
-    Location location;
-    Material block;
-    long until;
+    private final Location location;
+    private final Material block;
+    private final long until;
 
     public long check() {
         long now = System.currentTimeMillis();

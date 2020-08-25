@@ -4,13 +4,15 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
-import me.imdanix.mine.WeightedCollection;
 import me.imdanix.mine.mineshaft.cooldown.Cooldowns;
+import me.imdanix.mine.util.Utils;
+import me.imdanix.mine.util.WeightedCollection;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,14 +25,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -46,6 +45,8 @@ public class ShaftsManager implements Listener {
     private final Cooldowns cooldowns;
     private final Set<BlockBreakEvent> inUse;
     private final Random rng;
+
+    private Effect breakEffect;
 
     @Getter
     private final Map<String, String> messages;
@@ -106,6 +107,7 @@ public class ShaftsManager implements Listener {
             } else {
                 inUse.add(event);
                 Location location = block.getLocation();
+                breakEffect.play(location);
                 if (!resource.getReplaces().isEmpty()) {
                     Bukkit.getScheduler().runTaskLater(
                             plugin,
@@ -117,10 +119,10 @@ public class ShaftsManager implements Listener {
                     event.setDropItems(false);
                     player.giveExp(event.getExpToDrop());
                     event.setExpToDrop(0);
-                    player.getInventory().addItem(getCustomDrop(resource, block, player));
+                    player.getInventory().addItem(Utils.getCustomDrop(resource, block, player));
                 } else if (!resource.getReplaces().isEmpty()) {
                     event.setDropItems(false);
-                    world.dropItemNaturally(location.clone().add(0.5, 0.5, 0.5), getCustomDrop(resource, block, player));
+                    world.dropItemNaturally(location.add(0.5, 0.5, 0.5), Utils.getCustomDrop(resource, block, player));
                 }
                 return;
             }
@@ -129,30 +131,38 @@ public class ShaftsManager implements Listener {
 
     // such a mess
     public void reload(ConfigurationSection cfg) {
-        ConfigurationSection messagesCfg = section("messages", cfg);
-        messages.put("cooldown", clr(messagesCfg.getString("cooldown", "&4ERROR")));
-        messages.put("reloaded", clr(messagesCfg.getString("reloaded", "&4ERROR")));
+        ConfigurationSection messagesCfg = Utils.section("messages", cfg);
+        messages.put("cooldown", Utils.clr(messagesCfg.getString("cooldown", "&4ERROR")));
+        messages.put("reloaded", Utils.clr(messagesCfg.getString("reloaded", "&4ERROR")));
+
+        ConfigurationSection effectsCfg = Utils.section("effects", cfg);
+        breakEffect = new Effect(
+                Utils.getEnum(Sound.class, effectsCfg.getString("break.sound")),
+                Utils.getEnum(Particle.class, effectsCfg.getString("break.particle")));
+        cooldowns.setRegenEffect(new Effect(
+                Utils.getEnum(Sound.class, effectsCfg.getString("regen.sound")),
+                Utils.getEnum(Particle.class, effectsCfg.getString("regen.particle"))));
 
         shaftsByType.clear();
         shafts.clear();
-        ConfigurationSection worldsCfg = section("worlds", cfg);
+        ConfigurationSection worldsCfg = Utils.section("worlds", cfg);
         for (String world : worldsCfg.getKeys(false)) {
 
-            ConfigurationSection regionsCfg = section(world, worldsCfg);
+            ConfigurationSection regionsCfg = Utils.section(world, worldsCfg);
             for (String region : regionsCfg.getKeys(false)) {
 
                 Mineshaft shaft = new Mineshaft(world, region);
-                ConfigurationSection materialsCfg = section(region, regionsCfg);
+                ConfigurationSection materialsCfg = Utils.section(region, regionsCfg);
                 for (String typeStr : materialsCfg.getKeys(false)) {
-                    ConfigurationSection resourceCfg = section(typeStr, materialsCfg);
-                    Material type = getMaterial(typeStr);
+                    ConfigurationSection resourceCfg = Utils.section(typeStr, materialsCfg);
+                    Material type = Utils.getMaterial(typeStr);
                     if (type == null) {
                         continue;
                     }
                     List<String> replacesStr = resourceCfg.getStringList("replace-with");
                     List<Material> replaces = replacesStr.isEmpty() ? Collections.emptyList() : new ArrayList<>();
                     for (String replaceStr : replacesStr) {
-                        Material replace = getMaterial(replaceStr);
+                        Material replace = Utils.getMaterial(replaceStr);
                         if (replace != null) {
                             replaces.add(replace);
                         }
@@ -161,7 +171,7 @@ public class ShaftsManager implements Listener {
                     WeightedCollection<ItemStack> drops = new WeightedCollection<>();
                     for (String dropStr : dropsStr) {
                         String[] split = dropStr.split(" ");
-                        Material dropType = getMaterial(split[0]);
+                        Material dropType = Utils.getMaterial(split[0]);
                         if (dropType == null) {
                             continue;
                         }
@@ -187,30 +197,8 @@ public class ShaftsManager implements Listener {
         }
     }
 
-    private  <T> T randomElement(List<T> list) {
+    private <T> T randomElement(List<T> list) {
         return list.get(rng.nextInt(list.size()));
     }
 
-    private static ItemStack getCustomDrop(MineableResource resource, Block block, Player player) {
-        return resource.getDrops().isEmpty() ?
-                getFirst(block.getDrops(player.getInventory().getItemInMainHand()), new ItemStack(Material.STONE)) :
-                resource.getDrops().next();
-    }
-
-    private static <T> T getFirst(Collection<T> coll, T def) {
-        Iterator<T> iter = coll.iterator();
-        return iter.hasNext() ? iter.next() : def;
-    }
-
-    private static ConfigurationSection section(String path, ConfigurationSection cfg) {
-        return cfg.isConfigurationSection(path) ? cfg.getConfigurationSection(path) : cfg.createSection(path);
-    }
-
-    private static Material getMaterial(String typeStr) {
-        return Material.getMaterial(typeStr.toUpperCase(Locale.ENGLISH));
-    }
-
-    private static String clr(String str) {
-        return ChatColor.translateAlternateColorCodes('&', str);
-    }
 }

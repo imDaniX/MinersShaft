@@ -1,6 +1,6 @@
 package me.imdanix.mine.mineshaft.cooldown;
 
-import org.bukkit.Bukkit;
+import me.imdanix.mine.util.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +39,7 @@ public class SQLite {
     public void insert(Location location, Material type, long time) {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO `cooldowns` (location,type,until) VALUES (?,?,?);");
-            statement.setString(1, locationToString(location));
+            statement.setString(1, Utils.locationToString(location));
             statement.setString(2, type.toString());
             statement.setLong(3, time);
             statement.executeUpdate();
@@ -57,7 +57,7 @@ public class SQLite {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM `cooldowns` WHERE location IN (" + builder.substring(0, builder.length() - 1) + ")");
             int i = 0;
             for (Location location : locations) {
-                statement.setString(++i, locationToString(location));
+                statement.setString(++i, Utils.locationToString(location));
             }
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -68,7 +68,7 @@ public class SQLite {
     public void delete(Location location) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM `cooldowns` WHERE location = ?;");
-            statement.setString(1, locationToString(location));
+            statement.setString(1, Utils.locationToString(location));
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class SQLite {
             List<CooledBlock> blocks = new ArrayList<>();
             while (e.next()) {
                 blocks.add(new CooledBlock(
-                        strngToLocation(e.getString("location")),
+                        Utils.strngToLocation(e.getString("location")),
                         Material.getMaterial(e.getString("type")),
                         e.getLong("until"))
                 );
@@ -94,18 +94,4 @@ public class SQLite {
         return Collections.emptySet();
     }
 
-    public static String locationToString(Location location) {
-        return location.getWorld().getName() + "," +
-                location.getBlockX() + "," +
-                location.getBlockY() + "," +
-                location.getBlockZ();
-    }
-
-    private static Location strngToLocation(String string) {
-        String[] split = string.split(",");
-        return new Location(Bukkit.getWorld(split[0]),
-                Double.valueOf(split[1]),
-                Double.valueOf(split[2]),
-                Double.valueOf(split[3]));
-    }
 }

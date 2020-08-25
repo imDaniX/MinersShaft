@@ -2,6 +2,17 @@ messages:
   cooldown: '&cThis block is on cooldown for {seconds} seconds!'
   reloaded: '&aPlugin was successfully reloaded!'
 
+effects:
+  # Break and regen effects. Leave blank to disable
+  # Sounds https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+  # Particles https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+  break:
+    sound: 'BLOCK_LAVA_EXTINGUISH'
+    particle: 'SMOKE_NORMAL'
+  regen:
+    sound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+    particle: 'VILLAGER_HAPPY'
+
 worlds:
   # World name (case-sensitive)
   world:

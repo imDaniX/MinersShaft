@@ -1,4 +1,4 @@
-package me.imdanix.mine;
+package me.imdanix.mine.util;
 
 import java.util.ArrayList;
 import java.util.List;
