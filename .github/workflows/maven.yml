@@ -27,4 +27,4 @@ jobs:
       - uses: actions/upload-artifact@main
         with:
           name: SimpleMine
-          path: spigot/target/SimpleMine.jar
+          path: /target/SimpleMine.jar
