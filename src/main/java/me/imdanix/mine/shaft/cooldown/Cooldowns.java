@@ -1,7 +1,7 @@
-package me.imdanix.mine.mineshaft.cooldown;
+package me.imdanix.mine.shaft.cooldown;
 
 import lombok.Setter;
-import me.imdanix.mine.mineshaft.Effect;
+import me.imdanix.mine.shaft.Effect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

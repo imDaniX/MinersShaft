@@ -1,7 +1,7 @@
 package me.imdanix.mine.util;
 
 import lombok.experimental.UtilityClass;
-import me.imdanix.mine.mineshaft.MineableResource;
+import me.imdanix.mine.shaft.MineableResource;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

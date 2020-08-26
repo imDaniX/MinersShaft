@@ -1,10 +1,10 @@
-package me.imdanix.mine.mineshaft;
+package me.imdanix.mine.shaft;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
-import me.imdanix.mine.mineshaft.cooldown.Cooldowns;
+import me.imdanix.mine.shaft.cooldown.Cooldowns;
 import me.imdanix.mine.util.Utils;
 import me.imdanix.mine.util.WeightedCollection;
 import org.bukkit.Bukkit;

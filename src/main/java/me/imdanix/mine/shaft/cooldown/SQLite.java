@@ -1,4 +1,4 @@
-package me.imdanix.mine.mineshaft.cooldown;
+package me.imdanix.mine.shaft.cooldown;
 
 import me.imdanix.mine.util.Utils;
 import org.bukkit.Location;

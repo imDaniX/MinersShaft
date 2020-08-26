@@ -1,4 +1,4 @@
-package me.imdanix.mine.mineshaft.cooldown;
+package me.imdanix.mine.shaft.cooldown;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

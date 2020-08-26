@@ -1,4 +1,4 @@
-package me.imdanix.mine.mineshaft;
+package me.imdanix.mine.shaft;
 
 import lombok.Value;
 import me.imdanix.mine.util.WeightedCollection;

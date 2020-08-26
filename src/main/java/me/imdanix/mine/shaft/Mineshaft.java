@@ -1,4 +1,4 @@
-package me.imdanix.mine.mineshaft;
+package me.imdanix.mine.shaft;
 
 import lombok.Getter;
 import org.bukkit.Material;
