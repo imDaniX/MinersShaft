@@ -26,5 +26,5 @@ jobs:
         run: mvn -B package --file pom.xml
       - uses: actions/upload-artifact@main
         with:
-          name: SimpleMine
-          path: /target/SimpleMine.jar
+          name: 'Miner''s Shaft'
+          path: /target/MinersShaft.jar
