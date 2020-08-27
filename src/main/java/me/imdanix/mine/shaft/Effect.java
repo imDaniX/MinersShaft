@@ -15,6 +15,6 @@ public class Effect {
         Location center = loc.clone().add(0.5, 0.5, 0.5);
         World world = loc.getWorld();
         if (sound != null)      world.playSound(center, sound, 0.5f, 1f);
-        if (particle != null)   world.spawnParticle(particle, 0.6, 0.6, 0.6, 20);
+        if (particle != null)   world.spawnParticle(particle, center, 20, 0.6, 0.6, 0.6);
     }
 }

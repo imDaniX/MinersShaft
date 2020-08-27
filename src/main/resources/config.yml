@@ -7,6 +7,9 @@ effects:
   # Sounds https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
   # Particles https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
   break:
+    sound: 'BLOCK_LAVA_POP'
+    particle: 'END_ROD'
+  cooldown:
     sound: 'BLOCK_LAVA_EXTINGUISH'
     particle: 'SMOKE_NORMAL'
   regen:
@@ -47,7 +50,7 @@ worlds:
         cooldown: 120
 
       diamond_ore:
-        # If there's no custom-drop block will drop vanilla items
+        # If there's no custom-drop, block will drop vanilla items
         custom-drop: []
         replace-with:
           - obsidian

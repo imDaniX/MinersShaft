@@ -47,6 +47,7 @@ public class ShaftsManager implements Listener {
     private final Random rng;
 
     private Effect breakEffect;
+    private Effect cooldownEffect;
 
     @Getter
     private final Map<String, String> messages;
@@ -81,8 +82,9 @@ public class ShaftsManager implements Listener {
         if (shafts == null) {
             long cooldown = cooldowns.getCooldown(block);
             if (cooldown > 0) {
-                event.setCancelled(true);
+                cooldownEffect.play(block.getLocation());
                 player.sendMessage(messages.get("cooldown").replace("{seconds}", Long.toString(cooldown/1000)));
+                event.setCancelled(true);
             }
             return;
         }
@@ -102,6 +104,7 @@ public class ShaftsManager implements Listener {
             MineableResource resource = shaft.getResource(block.getType());
             long cooldown = cooldowns.addBlock(block, resource.getCooldown());
             if (cooldown > 0) {
+                cooldownEffect.play(block.getLocation());
                 player.sendMessage(messages.get("cooldown").replace("{seconds}", Long.toString(cooldown/1000)));
                 return;
             } else {
@@ -139,6 +142,9 @@ public class ShaftsManager implements Listener {
         breakEffect = new Effect(
                 Utils.getEnum(Sound.class, effectsCfg.getString("break.sound")),
                 Utils.getEnum(Particle.class, effectsCfg.getString("break.particle")));
+        cooldownEffect = new Effect(
+                Utils.getEnum(Sound.class, effectsCfg.getString("cooldown.sound")),
+                Utils.getEnum(Particle.class, effectsCfg.getString("cooldown.particle")));
         cooldowns.setRegenEffect(new Effect(
                 Utils.getEnum(Sound.class, effectsCfg.getString("regen.sound")),
                 Utils.getEnum(Particle.class, effectsCfg.getString("regen.particle"))));
